@@ -7,7 +7,11 @@
     <meta name="description" content="Kawachi Protocol - The first liquidity protocol on the MultiversX blockchain. Liquid staking, lending, and DeFi solutions.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" type="image/svg+xml">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/micku7zu/vanilla-tilt.js@1.8.0/dist/vanilla-tilt.min.js"></script>
+
     <style>
         :root {
             --primary-color: #00ffff;
@@ -37,6 +41,63 @@
             color: var(--text-primary);
             overflow-x: hidden;
             line-height: 1.6;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: all 0.1s ease;
+            box-shadow: 0 0 20px var(--primary-color);
+        }
+
+        .custom-cursor-trail {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.7;
+            transition: all 0.2s ease;
+        }
+
+        .custom-cursor.hover {
+            transform: scale(2);
+            background: var(--accent-color);
+            box-shadow: 0 0 40px var(--accent-color);
+        }
+
+        .custom-cursor-trail.hover {
+            transform: scale(1.5);
+            opacity: 0.5;
+        }
+
+        /* Hide cursor on mobile */
+        @media (max-width: 768px) {
+            body {
+                cursor: auto;
+            }
+            .custom-cursor, .custom-cursor-trail {
+                display: none;
+            }
+        }
+
+        /* Magnetic Effect */
+        .magnetic {
+            transition: transform 0.2s ease;
+        }
+
+        .magnetic.magnetized {
+            transform: translate(var(--x, 0), var(--y, 0));
         }
 
         /* Animated Background */
@@ -51,6 +112,16 @@
                         radial-gradient(circle at 80% 20%, #ff00ff22 0%, transparent 50%),
                         radial-gradient(circle at 40% 80%, #0080ff22 0%, transparent 50%);
             animation: bgFloat 20s ease-in-out infinite;
+        }
+
+        /* Particles Background */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
         }
 
         @keyframes bgFloat {
@@ -164,6 +235,8 @@
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: var(--shadow-glow);
+            position: relative;
+            overflow: hidden;
         }
 
         .nav-cta:hover {
@@ -364,6 +437,8 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            transform-style: preserve-3d;
+            will-change: transform;
         }
 
         .feature-card::before {
@@ -378,6 +453,20 @@
             transition: opacity 0.3s ease;
         }
 
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            border-radius: inherit;
+        }
+
         .feature-card:hover {
             transform: translateY(-10px);
             box-shadow: var(--shadow-glow);
@@ -385,6 +474,10 @@
         }
 
         .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover::after {
             opacity: 1;
         }
 
@@ -739,11 +832,11 @@
             }
         }
 
-        /* Scroll animations */
+        /* Enhanced Scroll animations */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
-            transition: all 0.6s ease;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .fade-in.visible {
@@ -754,7 +847,7 @@
         .slide-in-left {
             opacity: 0;
             transform: translateX(-50px);
-            transition: all 0.6s ease;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .slide-in-left.visible {
@@ -765,12 +858,38 @@
         .slide-in-right {
             opacity: 0;
             transform: translateX(50px);
-            transition: all 0.6s ease;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .slide-in-right.visible {
             opacity: 1;
             transform: translateX(0);
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .scale-in.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .stagger-animation {
+            animation-delay: var(--stagger-delay, 0ms);
         }
 
         /* Counter Animation */
@@ -795,6 +914,13 @@
     </style>
 </head>
 <body>
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+    <div class="custom-cursor-trail"></div>
+
+    <!-- Particles Background -->
+    <div id="particles-js"></div>
+
     <div class="animated-bg"></div>
 
     <!-- Navigation -->
@@ -812,7 +938,7 @@
                 <li><a href="#ecosystem" class="nav-link">Ecosystem</a></li>
                 <li><a href="#" class="nav-link">Docs</a></li>
                 <li><a href="#" class="nav-link">Blog</a></li>
-                <li><a href="#" class="nav-cta">App</a></li>
+                <li><a href="#" class="nav-cta magnetic">App</a></li>
             </ul>
             <button class="mobile-menu-toggle" id="mobileToggle">☰</button>
         </div>
@@ -823,17 +949,17 @@
         <div class="floating-element"></div>
         <div class="floating-element"></div>
         <div class="floating-element"></div>
-        
+
         <div class="hero-content">
             <h1 class="hero-title">The Future of DeFi on MultiversX</h1>
             <p class="hero-subtitle">First Liquidity Protocol on MultiversX Blockchain</p>
             <p class="hero-description">
-                Kawachi Protocol revolutionizes decentralized finance with innovative liquid staking, 
+                Kawachi Protocol revolutionizes decentralized finance with innovative liquid staking,
                 lending solutions, and a comprehensive DeFi ecosystem built for the next generation.
             </p>
             <div class="hero-cta">
-                <a href="#" class="btn btn-primary">Launch App</a>
-                <a href="#features" class="btn btn-secondary">Learn More</a>
+                <a href="#" class="btn btn-primary magnetic">Launch App</a>
+                <a href="#features" class="btn btn-secondary magnetic">Learn More</a>
             </div>
         </div>
     </section>
@@ -845,58 +971,58 @@
             <p class="section-subtitle fade-in">
                 Experience the next generation of decentralized finance with our cutting-edge protocol
             </p>
-            
+
             <div class="features-grid">
-                <div class="feature-card fade-in">
+                <div class="feature-card fade-in tilt magnetic stagger-animation" data-tilt data-tilt-max="15" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.3" style="--stagger-delay: 100ms;">
                     <div class="feature-icon">💧</div>
                     <h3 class="feature-title">Liquid Staking</h3>
                     <p class="feature-description">
-                        Stake your assets while maintaining liquidity. Earn rewards without locking up your tokens, 
+                        Stake your assets while maintaining liquidity. Earn rewards without locking up your tokens,
                         enabling maximum capital efficiency in the DeFi ecosystem.
                     </p>
                 </div>
-                
-                <div class="feature-card fade-in">
+
+                <div class="feature-card fade-in tilt magnetic stagger-animation" data-tilt data-tilt-max="15" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.3" style="--stagger-delay: 200ms;">
                     <div class="feature-icon">🏦</div>
                     <h3 class="feature-title">Lending Protocol</h3>
                     <p class="feature-description">
-                        Borrow and lend assets with competitive rates. Our advanced algorithm ensures 
+                        Borrow and lend assets with competitive rates. Our advanced algorithm ensures
                         optimal interest rates and maximum security for all participants.
                     </p>
                 </div>
-                
-                <div class="feature-card fade-in">
+
+                <div class="feature-card fade-in tilt magnetic stagger-animation" data-tilt data-tilt-max="15" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.3" style="--stagger-delay: 300ms;">
                     <div class="feature-icon">🚀</div>
                     <h3 class="feature-title">Boost Rewards</h3>
                     <p class="feature-description">
-                        Multiply your earnings by staking KWC tokens. Gain access to higher yields 
+                        Multiply your earnings by staking KWC tokens. Gain access to higher yields
                         and exclusive features within the Kawachi ecosystem.
                     </p>
                 </div>
-                
-                <div class="feature-card fade-in">
+
+                <div class="feature-card fade-in tilt magnetic stagger-animation" data-tilt data-tilt-max="15" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.3" style="--stagger-delay: 400ms;">
                     <div class="feature-icon">🛡️</div>
                     <h3 class="feature-title">Safety Module</h3>
                     <p class="feature-description">
-                        Secure the protocol and earn safety incentives. Our insurance mechanism 
+                        Secure the protocol and earn safety incentives. Our insurance mechanism
                         provides additional security while rewarding community participation.
                     </p>
                 </div>
-                
-                <div class="feature-card fade-in">
+
+                <div class="feature-card fade-in tilt magnetic stagger-animation" data-tilt data-tilt-max="15" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.3" style="--stagger-delay: 500ms;">
                     <div class="feature-icon">🌉</div>
                     <h3 class="feature-title">Cross-Chain Bridge</h3>
                     <p class="feature-description">
-                        Seamlessly bridge assets across different blockchains. Connect your tokens 
+                        Seamlessly bridge assets across different blockchains. Connect your tokens
                         to the MultiversX ecosystem with minimal fees and maximum security.
                     </p>
                 </div>
-                
-                <div class="feature-card fade-in">
+
+                <div class="feature-card fade-in tilt magnetic stagger-animation" data-tilt data-tilt-max="15" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.3" style="--stagger-delay: 600ms;">
                     <div class="feature-icon">⚖️</div>
                     <h3 class="feature-title">Governance</h3>
                     <p class="feature-description">
-                        Participate in protocol governance with KWC tokens. Vote on proposals and 
+                        Participate in protocol governance with KWC tokens. Vote on proposals and
                         shape the future of the Kawachi ecosystem.
                     </p>
                 </div>
@@ -911,23 +1037,23 @@
             <p class="section-subtitle fade-in">
                 Discover the utility and distribution of the Kawachi token ecosystem
             </p>
-            
+
             <div class="stats-grid">
                 <div class="stat-card fade-in">
                     <span class="stat-number counter" data-target="1000000000">0</span>
                     <div class="stat-label">Total Supply</div>
                 </div>
-                
+
                 <div class="stat-card fade-in">
                     <span class="stat-number counter" data-target="15">0</span>
                     <div class="stat-label">APY Rewards</div>
                 </div>
-                
+
                 <div class="stat-card fade-in">
                     <span class="stat-number counter" data-target="50000">0</span>
                     <div class="stat-label">Active Users</div>
                 </div>
-                
+
                 <div class="stat-card fade-in">
                     <span class="stat-number counter" data-target="100">0</span>
                     <div class="stat-label">Million TVL</div>
@@ -943,31 +1069,31 @@
             <p class="section-subtitle fade-in">
                 Maximize your yields while maintaining flexibility and liquidity
             </p>
-            
+
             <div class="features-grid">
                 <div class="feature-card slide-in-left">
                     <div class="feature-icon">💎</div>
                     <h3 class="feature-title">Stake & Earn</h3>
                     <p class="feature-description">
-                        Stake your EGLD and receive liquid staking tokens that represent your staked position 
+                        Stake your EGLD and receive liquid staking tokens that represent your staked position
                         while earning consistent rewards from network validation.
                     </p>
                 </div>
-                
+
                 <div class="feature-card slide-in-right">
                     <div class="feature-icon">🔄</div>
                     <h3 class="feature-title">Instant Liquidity</h3>
                     <p class="feature-description">
-                        Trade your staked assets without waiting for unbonding periods. Maintain full 
+                        Trade your staked assets without waiting for unbonding periods. Maintain full
                         liquidity while earning staking rewards continuously.
                     </p>
                 </div>
-                
+
                 <div class="feature-card slide-in-left">
                     <div class="feature-icon">📈</div>
                     <h3 class="feature-title">Compound Returns</h3>
                     <p class="feature-description">
-                        Automatically compound your staking rewards for maximum yield generation. 
+                        Automatically compound your staking rewards for maximum yield generation.
                         Our protocol optimizes returns through strategic reinvestment.
                     </p>
                 </div>
@@ -982,40 +1108,40 @@
             <p class="section-subtitle fade-in">
                 A comprehensive DeFi ecosystem built for the future of finance
             </p>
-            
+
             <div class="ecosystem-grid">
-                <div class="ecosystem-card fade-in">
+                <div class="ecosystem-card fade-in tilt magnetic stagger-animation" data-tilt data-tilt-max="12" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.2" style="--stagger-delay: 100ms;">
                     <div class="feature-icon">🏛️</div>
                     <h3 class="feature-title">Kawachi Protocol</h3>
                     <p class="feature-description">
-                        Core protocol enabling liquid staking and lending with advanced risk management 
+                        Core protocol enabling liquid staking and lending with advanced risk management
                         and automated yield optimization strategies.
                     </p>
                 </div>
-                
-                <div class="ecosystem-card fade-in">
+
+                <div class="ecosystem-card fade-in tilt magnetic stagger-animation" data-tilt data-tilt-max="12" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.2" style="--stagger-delay: 200ms;">
                     <div class="feature-icon">🧪</div>
                     <h3 class="feature-title">Kawachi Labs</h3>
                     <p class="feature-description">
-                        Research and development arm pushing the boundaries of DeFi innovation 
+                        Research and development arm pushing the boundaries of DeFi innovation
                         with cutting-edge financial primitives.
                     </p>
                 </div>
-                
-                <div class="ecosystem-card fade-in">
+
+                <div class="ecosystem-card fade-in tilt magnetic stagger-animation" data-tilt data-tilt-max="12" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.2" style="--stagger-delay: 300ms;">
                     <div class="feature-icon">💰</div>
                     <h3 class="feature-title">KawachiUSD</h3>
                     <p class="feature-description">
-                        Native stablecoin providing stability and utility across the ecosystem 
+                        Native stablecoin providing stability and utility across the ecosystem
                         with robust collateralization and peg mechanisms.
                     </p>
                 </div>
-                
-                <div class="ecosystem-card fade-in">
+
+                <div class="ecosystem-card fade-in tilt magnetic stagger-animation" data-tilt data-tilt-max="12" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.2" style="--stagger-delay: 400ms;">
                     <div class="feature-icon">🌱</div>
                     <h3 class="feature-title">Yield Farming</h3>
                     <p class="feature-description">
-                        Advanced yield farming strategies with automated compound rewards 
+                        Advanced yield farming strategies with automated compound rewards
                         and risk-adjusted return optimization.
                     </p>
                 </div>
@@ -1030,7 +1156,7 @@
             <p class="section-subtitle fade-in">
                 Get answers to common questions about the Kawachi Protocol
             </p>
-            
+
             <div class="faq-container">
                 <div class="faq-item fade-in">
                     <button class="faq-question">
@@ -1041,7 +1167,7 @@
                         <p>Kawachi Protocol is the first comprehensive liquidity protocol on the MultiversX blockchain, offering liquid staking, lending, and advanced DeFi solutions.</p>
                     </div>
                 </div>
-                
+
                 <div class="faq-item fade-in">
                     <button class="faq-question">
                         How does liquid staking work?
@@ -1051,7 +1177,7 @@
                         <p>Liquid staking allows you to stake your tokens and receive liquid derivatives that can be traded or used in DeFi while still earning staking rewards.</p>
                     </div>
                 </div>
-                
+
                 <div class="faq-item fade-in">
                     <button class="faq-question">
                         What are the benefits of KWC tokens?
@@ -1061,7 +1187,7 @@
                         <p>KWC tokens provide governance rights, boost rewards, access to exclusive features, and a share of protocol revenue through staking mechanisms.</p>
                     </div>
                 </div>
-                
+
                 <div class="faq-item fade-in">
                     <button class="faq-question">
                         Is the protocol audited and secure?
@@ -1082,10 +1208,10 @@
             <p class="section-subtitle fade-in">
                 Subscribe to our newsletter for the latest updates, features, and DeFi insights
             </p>
-            
+
             <form class="newsletter-form fade-in">
                 <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
-                <button type="submit" class="btn btn-primary">Subscribe</button>
+                <button type="submit" class="btn btn-primary magnetic">Subscribe</button>
             </form>
         </div>
     </section>
@@ -1102,7 +1228,7 @@
                     <li><a href="#">Governance</a></li>
                 </ul>
             </div>
-            
+
             <div class="footer-section">
                 <h3>Ecosystem</h3>
                 <ul class="footer-links">
@@ -1112,7 +1238,7 @@
                     <li><a href="#">Bridge</a></li>
                 </ul>
             </div>
-            
+
             <div class="footer-section">
                 <h3>Developers</h3>
                 <ul class="footer-links">
@@ -1122,7 +1248,7 @@
                     <li><a href="#">Bug Bounty</a></li>
                 </ul>
             </div>
-            
+
             <div class="footer-section">
                 <h3>Community</h3>
                 <ul class="footer-links">
@@ -1133,7 +1259,7 @@
                 </ul>
             </div>
         </div>
-        
+
         <div class="footer-bottom">
             <p>&copy; 2024 Kawachi Protocol. All rights reserved.</p>
             <div class="social-links">
@@ -1146,179 +1272,402 @@
     </footer>
 
     <script>
-        // Mobile menu toggle
-        const mobileToggle = document.getElementById('mobileToggle');
-        const navMenu = document.getElementById('navMenu');
+        // Mobile detection
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
 
-        mobileToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-
-        // Navbar scroll effect
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
+        // Initialize all interactions
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!isMobile) {
+                initCustomCursor();
+                initMagneticEffect();
+                initVanillaTilt();
             }
+            initParticles();
+            initScrollAnimations();
+            initMobileMenu();
+            initNavbar();
+            initFAQ();
+            initNewsletter();
+            initCounters();
+            initParallax();
+            initDynamicGradient();
         });
 
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-                // Close mobile menu if open
-                navMenu.classList.remove('active');
+        // Custom Cursor Implementation
+        function initCustomCursor() {
+            const cursor = document.querySelector('.custom-cursor');
+            const cursorTrail = document.querySelector('.custom-cursor-trail');
+
+            if (!cursor || !cursorTrail) return;
+
+            let mouseX = 0, mouseY = 0;
+            let trailX = 0, trailY = 0;
+
+            // Update cursor position
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+
+                cursor.style.left = mouseX + 'px';
+                cursor.style.top = mouseY + 'px';
             });
-        });
 
-        // Intersection Observer for animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+            // Smooth trail animation
+            function animateTrail() {
+                trailX += (mouseX - trailX) * 0.1;
+                trailY += (mouseY - trailY) * 0.1;
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
+                cursorTrail.style.left = trailX + 'px';
+                cursorTrail.style.top = trailY + 'px';
 
-        // Observe all animated elements
-        document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right').forEach(el => {
-            observer.observe(el);
-        });
+                requestAnimationFrame(animateTrail);
+            }
+            animateTrail();
 
-        // Counter animation
-        function animateCounters() {
-            const counters = document.querySelectorAll('.counter');
-            counters.forEach(counter => {
-                const target = parseInt(counter.getAttribute('data-target'));
-                const current = parseInt(counter.textContent);
-                const increment = target / 100;
-                
-                if (current < target) {
-                    counter.textContent = Math.ceil(current + increment).toLocaleString();
-                    setTimeout(() => animateCounters(), 20);
-                } else {
-                    counter.textContent = target.toLocaleString();
-                }
+            // Hover effects
+            const hoverElements = document.querySelectorAll('a, button, .magnetic, .feature-card, .ecosystem-card');
+
+            hoverElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.classList.add('hover');
+                    cursorTrail.classList.add('hover');
+                });
+
+                el.addEventListener('mouseleave', () => {
+                    cursor.classList.remove('hover');
+                    cursorTrail.classList.remove('hover');
+                });
             });
         }
 
-        // Start counter animation when section is visible
-        const tokenSection = document.getElementById('token');
-        const tokenObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounters();
-                    tokenObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.5 });
+        // Magnetic Effect Implementation
+        function initMagneticEffect() {
+            const magneticElements = document.querySelectorAll('.magnetic');
 
-        tokenObserver.observe(tokenSection);
+            magneticElements.forEach(element => {
+                element.addEventListener('mousemove', (e) => {
+                    const rect = element.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
 
-        // FAQ accordion
-        document.querySelectorAll('.faq-question').forEach(question => {
-            question.addEventListener('click', () => {
-                const faqItem = question.parentElement;
-                const answer = faqItem.querySelector('.faq-answer');
-                
-                // Close other open items
-                document.querySelectorAll('.faq-item').forEach(item => {
-                    if (item !== faqItem) {
-                        item.classList.remove('active');
-                        item.querySelector('.faq-answer').classList.remove('active');
+                    const distance = Math.sqrt(x * x + y * y);
+                    const maxDistance = 50;
+
+                    if (distance < maxDistance) {
+                        const force = (maxDistance - distance) / maxDistance;
+                        const moveX = x * force * 0.3;
+                        const moveY = y * force * 0.3;
+
+                        element.style.setProperty('--x', moveX + 'px');
+                        element.style.setProperty('--y', moveY + 'px');
+                        element.classList.add('magnetized');
                     }
                 });
-                
-                // Toggle current item
-                faqItem.classList.toggle('active');
-                answer.classList.toggle('active');
+
+                element.addEventListener('mouseleave', () => {
+                    element.style.setProperty('--x', '0px');
+                    element.style.setProperty('--y', '0px');
+                    element.classList.remove('magnetized');
+                });
             });
-        });
+        }
+
+        // Initialize Vanilla Tilt
+        function initVanillaTilt() {
+            if (typeof VanillaTilt !== 'undefined') {
+                VanillaTilt.init(document.querySelectorAll('.tilt'), {
+                    max: 15,
+                    speed: 1000,
+                    glare: true,
+                    'max-glare': 0.3,
+                    'glare-prerender': false
+                });
+            }
+        }
+
+        // Particles.js Implementation
+        function initParticles() {
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS('particles-js', {
+                    particles: {
+                        number: {
+                            value: 80,
+                            density: { enable: true, value_area: 800 }
+                        },
+                        color: { value: ['#00ffff', '#ff00ff', '#0080ff'] },
+                        shape: {
+                            type: 'circle',
+                            stroke: { width: 0, color: '#000000' }
+                        },
+                        opacity: {
+                            value: 0.6,
+                            random: true,
+                            anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false }
+                        },
+                        size: {
+                            value: 3,
+                            random: true,
+                            anim: { enable: true, speed: 2, size_min: 0.1, sync: false }
+                        },
+                        line_linked: {
+                            enable: true,
+                            distance: 150,
+                            color: '#00ffff',
+                            opacity: 0.2,
+                            width: 1
+                        },
+                        move: {
+                            enable: true,
+                            speed: 1,
+                            direction: 'none',
+                            random: true,
+                            straight: false,
+                            out_mode: 'out',
+                            bounce: false,
+                            attract: { enable: false, rotateX: 600, rotateY: 1200 }
+                        }
+                    },
+                    interactivity: {
+                        detect_on: 'canvas',
+                        events: {
+                            onhover: { enable: true, mode: 'repulse' },
+                            onclick: { enable: true, mode: 'push' },
+                            resize: true
+                        },
+                        modes: {
+                            grab: { distance: 140, line_linked: { opacity: 1 } },
+                            bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
+                            repulse: { distance: 100, duration: 0.4 },
+                            push: { particles_nb: 4 },
+                            remove: { particles_nb: 2 }
+                        }
+                    },
+                    retina_detect: true
+                });
+            }
+        }
+
+        // Enhanced Scroll Animations
+        function initScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        // Add stagger delay for elements with stagger-animation class
+                        if (entry.target.classList.contains('stagger-animation')) {
+                            const delay = parseInt(entry.target.style.getPropertyValue('--stagger-delay') || '0');
+                            setTimeout(() => {
+                                entry.target.classList.add('visible');
+                            }, delay);
+                        } else {
+                            entry.target.classList.add('visible');
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all animated elements
+            document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .fade-in-up, .scale-in').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Mobile menu toggle
+        function initMobileMenu() {
+            const mobileToggle = document.getElementById('mobileToggle');
+            const navMenu = document.getElementById('navMenu');
+
+            if (mobileToggle && navMenu) {
+                mobileToggle.addEventListener('click', () => {
+                    navMenu.classList.toggle('active');
+                });
+            }
+        }
+
+        // Navbar scroll effect
+        function initNavbar() {
+            const navbar = document.getElementById('navbar');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+
+                    // Only prevent default and smooth scroll for valid selectors
+                    if (href && href !== '#' && href.length > 1) {
+                        e.preventDefault();
+                        try {
+                            const target = document.querySelector(href);
+                            if (target) {
+                                target.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start'
+                                });
+                            }
+                        } catch (error) {
+                            console.warn('Invalid selector:', href);
+                        }
+                    }
+
+                    // Close mobile menu if open
+                    const navMenu = document.getElementById('navMenu');
+                    if (navMenu) {
+                        navMenu.classList.remove('active');
+                    }
+                });
+            });
+        }
+
+        // Counter animation
+        function initCounters() {
+            let countersAnimated = false;
+
+            function animateCounters() {
+                if (countersAnimated) return;
+                countersAnimated = true;
+
+                const counters = document.querySelectorAll('.counter');
+                counters.forEach(counter => {
+                    const target = parseInt(counter.getAttribute('data-target'));
+                    const duration = 2000;
+                    const step = target / (duration / 16);
+                    let current = 0;
+
+                    const timer = setInterval(() => {
+                        current += step;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        counter.textContent = Math.floor(current).toLocaleString();
+                    }, 16);
+                });
+            }
+
+            // Start counter animation when section is visible
+            const tokenSection = document.getElementById('token');
+            if (tokenSection) {
+                const tokenObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            animateCounters();
+                            tokenObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.5 });
+
+                tokenObserver.observe(tokenSection);
+            }
+        }
+
+        // FAQ accordion
+        function initFAQ() {
+            document.querySelectorAll('.faq-question').forEach(question => {
+                question.addEventListener('click', () => {
+                    const faqItem = question.parentElement;
+                    const answer = faqItem.querySelector('.faq-answer');
+
+                    // Close other open items
+                    document.querySelectorAll('.faq-item').forEach(item => {
+                        if (item !== faqItem) {
+                            item.classList.remove('active');
+                            item.querySelector('.faq-answer').classList.remove('active');
+                        }
+                    });
+
+                    // Toggle current item
+                    faqItem.classList.toggle('active');
+                    answer.classList.toggle('active');
+                });
+            });
+        }
 
         // Newsletter form
-        document.querySelector('.newsletter-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = e.target.querySelector('.newsletter-input').value;
-            if (email) {
-                alert('Thank you for subscribing to Kawachi updates!');
-                e.target.reset();
+        function initNewsletter() {
+            const form = document.querySelector('.newsletter-form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const email = e.target.querySelector('.newsletter-input').value;
+                    if (email) {
+                        // Add success animation
+                        const button = e.target.querySelector('button');
+                        const originalText = button.textContent;
+                        button.textContent = 'Subscribed!';
+                        button.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+
+                        setTimeout(() => {
+                            button.textContent = originalText;
+                            button.style.background = '';
+                            e.target.reset();
+                        }, 2000);
+                    }
+                });
             }
-        });
+        }
 
         // Parallax effect for floating elements
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelectorAll('.floating-element');
-            const speed = 0.5;
+        function initParallax() {
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const parallax = document.querySelectorAll('.floating-element');
+                const speed = 0.5;
 
-            parallax.forEach(element => {
-                const yPos = -(scrolled * speed);
-                element.style.transform = `translateY(${yPos}px)`;
+                parallax.forEach((element, index) => {
+                    const yPos = -(scrolled * speed * (index + 1) * 0.3);
+                    element.style.transform = `translateY(${yPos}px) rotate(${scrolled * 0.1}deg)`;
+                });
             });
-        });
+        }
+
+        // Dynamic gradient animation
+        function initDynamicGradient() {
+            let gradientAngle = 0;
+            setInterval(() => {
+                gradientAngle += 0.5;
+                document.documentElement.style.setProperty(
+                    '--gradient-primary',
+                    `linear-gradient(${gradientAngle}deg, #00ffff 0%, #0080ff 50%, #ff00ff 100%)`
+                );
+            }, 50);
+        }
+
+        // Enhanced card hover effects
+        function initCardEffects() {
+            document.querySelectorAll('.feature-card, .ecosystem-card, .stat-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    if (!card.classList.contains('tilt')) {
+                        card.style.transform = 'translateY(-10px) scale(1.02)';
+                    }
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    if (!card.classList.contains('tilt')) {
+                        card.style.transform = 'translateY(0) scale(1)';
+                    }
+                });
+            });
+        }
+
+        // Initialize card effects
+        setTimeout(initCardEffects, 100);
 
         // Add loading effect on page load
         window.addEventListener('load', () => {
             document.body.classList.remove('loading');
         });
-
-        // Enhanced hover effects for cards
-        document.querySelectorAll('.feature-card, .ecosystem-card, .stat-card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = 'translateY(-10px) scale(1.02)';
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0) scale(1)';
-            });
-        });
-
-        // Dynamic gradient animation
-        let gradientAngle = 0;
-        setInterval(() => {
-            gradientAngle += 1;
-            document.documentElement.style.setProperty(
-                '--gradient-primary', 
-                `linear-gradient(${gradientAngle}deg, #00ffff 0%, #0080ff 50%, #ff00ff 100%)`
-            );
-        }, 100);
-
-        // Typing effect for hero title (optional enhancement)
-        function typeWriter(element, text, speed = 100) {
-            let i = 0;
-            element.innerHTML = '';
-            
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, speed);
-                }
-            }
-            type();
-        }
-
-        // Activate typing effect on page load
-        setTimeout(() => {
-            const heroTitle = document.querySelector('.hero-title');
-            const originalText = heroTitle.textContent;
-            typeWriter(heroTitle, originalText, 50);
-        }, 500);
     </script>
 </body>
 </html>
-
